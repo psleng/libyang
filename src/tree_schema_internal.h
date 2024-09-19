@@ -767,4 +767,12 @@ void ly_check_module_filename(const struct ly_ctx *ctx, const char *name, const 
 int lysc_value_cmp(const struct lysc_node *schema, const struct lyd_node *ctx_node, const struct lysc_value *val,
         const char *val2);
 
+/**
+ * @brief Get the total size of the (sub)statements of a compiled extension instance for serialization.
+ *
+ * @param[in] substmts Substatements to examine.
+ * @return Total size of @p substmts.
+ */
+int ly_ctx_print_compiled_ext_stmt_size(const struct lysc_ext_substmt *substmts);
+
 #endif /* LY_TREE_SCHEMA_INTERNAL_H_ */

@@ -658,6 +658,15 @@ LIBYANG_API_DECL LY_ERR ly_ctx_get_yanglib_data(const struct ly_ctx *ctx, struct
 LIBYANG_API_DECL void ly_ctx_free_parsed(struct ly_ctx *ctx);
 
 /**
+ * @brief Get the total size a compiled context requires for serialization.
+ *
+ * @param[in] ctx Context to use.
+ * @return Total required size;
+ * @return -1 on error.
+ */
+LIBYANG_API_DECL int ly_ctx_print_compiled_size(const struct ly_ctx *ctx);
+
+/**
  * @brief Free all internal structures of the specified context.
  *
  * The function should be used before terminating the application to destroy

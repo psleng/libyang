@@ -214,6 +214,18 @@ annotation_cfree(const struct ly_ctx *ctx, struct lysc_ext_instance *ext)
     free(ext->compiled);
 }
 
+static int
+annotation_compiled_size(const struct lysc_ext_instance *ext)
+{
+    return lyplg_ext_compiled_extension_instance_size(ext);
+}
+
+static LY_ERR
+annotation_compiled_print(const struct lysc_ext_instance *orig_ext, void *mem, struct lysc_ext_instance *ext)
+{
+
+}
+
 /**
  * @brief Plugin descriptions for the Metadata's annotation extension
  *
@@ -227,7 +239,7 @@ const struct lyplg_ext_record plugins_metadata[] = {
         .revision = "2016-08-05",
         .name = "annotation",
 
-        .plugin.id = "ly2 metadata v1",
+        .plugin.id = "ly2 metadata",
         .plugin.parse = annotation_parse,
         .plugin.compile = annotation_compile,
         .plugin.printer_info = annotation_printer_info,
@@ -238,6 +250,8 @@ const struct lyplg_ext_record plugins_metadata[] = {
         .plugin.validate = NULL,
         .plugin.pfree = annotation_pfree,
         .plugin.cfree = annotation_cfree,
+        .plugin.compiled_size = annotation_compiled_size,
+        .plugin.compiled_print = annotation_compiled_print
     },
     {0}     /* terminating zeroed record */
 };

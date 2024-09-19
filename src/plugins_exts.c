@@ -412,7 +412,7 @@ lyplg_ext_print_get_level(const struct lyspr_ctx *ctx)
     return &((struct lyspr_ctx *)ctx)->level;
 }
 
-LIBYANG_API_DECL LY_ERR
+LIBYANG_API_DEF LY_ERR
 lyplg_ext_sprinter_ctree_add_ext_nodes(const struct lyspr_tree_ctx *ctx, struct lysc_ext_instance *ext,
         lyplg_ext_sprinter_ctree_override_clb clb)
 {
@@ -450,7 +450,7 @@ lyplg_ext_sprinter_ctree_add_ext_nodes(const struct lyspr_tree_ctx *ctx, struct 
     return rc;
 }
 
-LIBYANG_API_DECL LY_ERR
+LIBYANG_API_DEF LY_ERR
 lyplg_ext_sprinter_ptree_add_ext_nodes(const struct lyspr_tree_ctx *ctx, struct lysp_ext_instance *ext,
         lyplg_ext_sprinter_ptree_override_clb clb)
 {
@@ -488,7 +488,7 @@ lyplg_ext_sprinter_ptree_add_ext_nodes(const struct lyspr_tree_ctx *ctx, struct 
     return rc;
 }
 
-LIBYANG_API_DECL LY_ERR
+LIBYANG_API_DEF LY_ERR
 lyplg_ext_sprinter_ctree_add_nodes(const struct lyspr_tree_ctx *ctx, struct lysc_node *nodes,
         lyplg_ext_sprinter_ctree_override_clb clb)
 {
@@ -508,7 +508,7 @@ lyplg_ext_sprinter_ctree_add_nodes(const struct lyspr_tree_ctx *ctx, struct lysc
     return LY_SUCCESS;
 }
 
-LIBYANG_API_DECL LY_ERR
+LIBYANG_API_DEF LY_ERR
 lyplg_ext_sprinter_ptree_add_nodes(const struct lyspr_tree_ctx *ctx, struct lysp_node *nodes,
         lyplg_ext_sprinter_ptree_override_clb clb)
 {
@@ -528,7 +528,7 @@ lyplg_ext_sprinter_ptree_add_nodes(const struct lyspr_tree_ctx *ctx, struct lysp
     return LY_SUCCESS;
 }
 
-LIBYANG_API_DECL LY_ERR
+LIBYANG_API_DEF LY_ERR
 lyplg_ext_sprinter_tree_set_priv(const struct lyspr_tree_ctx *ctx, void *plugin_priv, void (*free_clb)(void *plugin_priv))
 {
     LY_CHECK_ARG_RET(NULL, ctx, LY_EINVAL);
@@ -537,6 +537,21 @@ lyplg_ext_sprinter_tree_set_priv(const struct lyspr_tree_ctx *ctx, void *plugin_
     ((struct lyspr_tree_ctx *)ctx)->free_plugin_priv = free_clb;
 
     return LY_SUCCESS;
+}
+
+LIBYANG_API_DEF int
+lyplg_ext_compiled_extension_instance_size(const struct lysc_ext_instance *ext)
+{
+    LY_CHECK_ARG_RET(NULL, ext, -1);
+
+    return ly_ctx_print_compiled_ext_stmt_size(ext->substmts);
+}
+
+LIBYANG_API_DEF LY_ERR
+lyplg_ext_compiled_extension_instance_print(const struct lysc_ext_instance *orig_ext, void *mem,
+        struct lysc_ext_instance *ext)
+{
+
 }
 
 LIBYANG_API_DEF const char *

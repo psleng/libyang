@@ -922,6 +922,57 @@ typedef void (*lyplg_ext_compile_free_clb)(const struct ly_ctx *ctx, struct lysc
  */
 LIBYANG_API_DECL void lyplg_ext_cfree_instance_substatements(const struct ly_ctx *ctx, struct lysc_ext_substmt *substmts);
 
+/*
+ * compiled size
+ */
+
+/**
+ * @brief Callback to return the size of the custom compiled structure and substmts array. If there are none, do not
+ * define this callback.
+ *
+ * @param[in] ext Compiled extension structure.
+ * @return Total size of the custom compiled structures and the substmts array;
+ * @return -1 on error.
+ */
+typedef int (*lyplg_ext_compiled_size_clb)(const struct lysc_ext_instance *ext);
+
+/**
+ * @brief Get the size of the compiled substmts with their storage_p pointers.
+ *
+ * @param[in] ext Compiled extension instance.
+ * @return Total size of the subtmts array;
+ * @return -1 on error.
+ */
+LIBYANG_API_DECL int lyplg_ext_compiled_extension_instance_size(const struct lysc_ext_instance *ext);
+
+/*
+ * compiled print
+ */
+
+/**
+ * @brief Callback to print (serialize) the custom compiled structure and substmts array.
+ *
+ * @param[in] orig_ext Compiled extension structure to print.
+ * @param[in] mem Memory chunk of the size returned by ::lyplg_ext_compiled_size_clb() to print into.
+ * @param[in] ext Serialized extension structure to modify.
+ * @return LY_SUCCESS on success.
+ * @return LY_ERR on error.
+ */
+typedef LY_ERR (*lyplg_ext_compiled_print_clb)(const struct lysc_ext_instance *orig_ext, void *mem,
+        struct lysc_ext_instance *ext);
+
+/**
+ * @brief Print the substmts array and assign it to the serialized extension instance.
+ *
+ * @param[in] orig_ext Compiled extension structure to print.
+ * @param[in] mem Memory chunk to print into.
+ * @param[in] ext Serialized extension structure to modify.
+ * @return LY_SUCCESS on success.
+ * @return LY_ERR on error.
+ */
+LIBYANG_API_DECL LY_ERR lyplg_ext_compiled_extension_instance_print(const struct lysc_ext_instance *orig_ext, void *mem,
+        struct lysc_ext_instance *ext);
+
 /**
  * @brief Extension plugin implementing various aspects of a YANG extension.
  *
@@ -947,6 +998,9 @@ struct lyplg_ext {
 
     lyplg_ext_parse_free_clb pfree;         /**< free the extension-specific data created by its parsing */
     lyplg_ext_compile_free_clb cfree;       /**< free the extension-specific data created by its compilation */
+    lyplg_ext_compiled_size_clb compiled_size;  /**< callback to get size of the custom compiled structure and substmts */
+    lyplg_ext_compiled_print_clb compiled_print;    /**< callback to print the compiled structure into a pre-allocated
+                                                         memory chunk */
 };
 
 struct lyplg_ext_record {

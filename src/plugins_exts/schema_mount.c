@@ -1307,6 +1307,35 @@ cleanup:
     return rc;
 }
 
+static int
+schema_mount_compiled_size(const struct lysc_ext_instance *ext)
+{
+    struct lyplg_ext_sm *sm_data = ext->compiled;
+    uint32_t i;
+    int size = 0;
+
+    if (!sm_data) {
+        return 0;
+    }
+
+    size += sizeof *sm_data;
+    size += sizeof *sm_data->shared;
+    size += sm_data->shared->schema_count * sizeof *sm_data->shared->schemas;
+    for (i = 0; i < sm_data->shared->schema_count; ++i) {
+        size += ly_ctx_print_compiled_size(sm_data->shared->schemas[i].ctx);
+    }
+
+    /* inlined contexts cannot be reused and will not be printed */
+
+    return size;
+}
+
+static LY_ERR
+schema_mount_compiled_print(const struct lysc_ext_instance *orig_ext, void *mem, struct lysc_ext_instance *ext)
+{
+
+}
+
 /**
  * @brief Plugin descriptions for the Yang Schema Mount extension.
  *
@@ -1320,7 +1349,7 @@ const struct lyplg_ext_record plugins_schema_mount[] = {
         .revision = "2019-01-14",
         .name = "mount-point",
 
-        .plugin.id = "ly2 schema mount v1",
+        .plugin.id = "ly2 schema mount",
         .plugin.parse = schema_mount_parse,
         .plugin.compile = schema_mount_compile,
         .plugin.printer_info = NULL,
@@ -1330,7 +1359,9 @@ const struct lyplg_ext_record plugins_schema_mount[] = {
         .plugin.snode = schema_mount_snode,
         .plugin.validate = schema_mount_validate,
         .plugin.pfree = NULL,
-        .plugin.cfree = schema_mount_cfree
+        .plugin.cfree = schema_mount_cfree,
+        .plugin.compiled_size = schema_mount_compiled_size,
+        .plugin.compiled_print = schema_mount_compiled_print,
     },
     {0} /* terminating zeroed item */
 };

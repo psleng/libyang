@@ -3,7 +3,7 @@
  * @author Michal Vasko <mvasko@cesnet.cz>
  * @brief libyang extension plugin - structure (RFC 8791)
  *
- * Copyright (c) 2022 CESNET, z.s.p.o.
+ * Copyright (c) 2022 - 2024 CESNET, z.s.p.o.
  *
  * This source code is licensed under BSD 3-Clause License (the "License").
  * You may not use this file except in compliance with the License.
@@ -295,6 +295,18 @@ structure_cfree(const struct ly_ctx *ctx, struct lysc_ext_instance *ext)
     free(ext->compiled);
 }
 
+static int
+structure_compiled_size(const struct lysc_ext_instance *ext)
+{
+    return lyplg_ext_compiled_extension_instance_size(ext);
+}
+
+static LY_ERR
+structure_compiled_print(const struct lysc_ext_instance *orig_ext, void *mem, struct lysc_ext_instance *ext)
+{
+
+}
+
 /**
  * @brief Parse augment-structure extension instances.
  *
@@ -525,7 +537,7 @@ const struct lyplg_ext_record plugins_structure[] = {
         .revision = "2020-06-17",
         .name = "structure",
 
-        .plugin.id = "ly2 structure v1",
+        .plugin.id = "ly2 structure",
         .plugin.parse = structure_parse,
         .plugin.compile = structure_compile,
         .plugin.printer_info = structure_printer_info,
@@ -535,14 +547,16 @@ const struct lyplg_ext_record plugins_structure[] = {
         .plugin.snode = NULL,
         .plugin.validate = NULL,
         .plugin.pfree = structure_pfree,
-        .plugin.cfree = structure_cfree
+        .plugin.cfree = structure_cfree,
+        .plugin.compiled_size = structure_compiled_size,
+        .plugin.compiled_print = structure_compiled_print
     },
     {
         .module = "ietf-yang-structure-ext",
         .revision = "2020-06-17",
         .name = "augment-structure",
 
-        .plugin.id = "ly2 structure v1",
+        .plugin.id = "ly2 structure",
         .plugin.parse = structure_aug_parse,
         .plugin.compile = NULL,
         .plugin.printer_info = NULL,
@@ -552,7 +566,9 @@ const struct lyplg_ext_record plugins_structure[] = {
         .plugin.snode = NULL,
         .plugin.validate = NULL,
         .plugin.pfree = structure_pfree,
-        .plugin.cfree = NULL
+        .plugin.cfree = NULL,
+        .plugin.compiled_size = NULL,
+        .plugin.compiled_print = NULL
     },
     {0}     /* terminating zeroed record */
 };
